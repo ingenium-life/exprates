@@ -1,6 +1,6 @@
 let users = []; // Глобальная переменная
 
-fetch('./js/users.json')
+fetch('/src/js/users.json')
   .then(response => {
     if (!response.ok) {
       throw new Error(`Ошибка загрузки: ${response.status}`);
@@ -32,7 +32,7 @@ const formData = {
 
 let exchangeRate = null; // Глобальная переменная
 
-fetch('./exprates.xml')
+fetch('./js/exprates.xml')
   .then(response => response.text())
   .then(xmlText => {
     const parser = new DOMParser();
