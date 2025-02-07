@@ -32,7 +32,7 @@ const formData = {
 
 let exchangeRate = null; // Глобальная переменная
 
-fetch('./js/exprates.xml')
+fetch('/src/js/exprates.xml')
   .then(response => response.text())
   .then(xmlText => {
     const parser = new DOMParser();
