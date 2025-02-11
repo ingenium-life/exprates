@@ -1,6 +1,6 @@
 let users = []; // Глобальная переменная
 
-fetch('public/users.json')
+fetch(`${import.meta.env.BASE_URL}data/users.json`)
   .then(response => {
     if (!response.ok) {
       throw new Error(`Ошибка загрузки: ${response.status}`);
@@ -32,14 +32,14 @@ const formData = {
 
 let exchangeRate = null; // Глобальная переменная
 
-fetch('public/exprates.xml')
+fetch(`${import.meta.env.BASE_URL}data/exprates.xml`)
   .then(response => response.text())
   .then(xmlText => {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xmlText, 'application/xml');
 
-    const fromCurrency = 'WIRETHB';
-    const toCurrency = 'SBERRUB';
+    const fromCurrency = 'SBERRUB';
+    const toCurrency = 'WIRETHB';
 
     const exchangeNode = Array.from(xmlDoc.querySelectorAll('item')).find(
       item =>
@@ -48,7 +48,10 @@ fetch('public/exprates.xml')
     );
 
     if (exchangeNode) {
-      exchangeRate = exchangeNode.querySelector('out').textContent;
+      let exchangeRateOut = exchangeNode.querySelector('out').textContent;
+      let exchangeRateIn = exchangeNode.querySelector('in').textContent;
+      exchangeRate = (exchangeRateOut / exchangeRateIn).toFixed(4);
+
       console.log(`Курс ${fromCurrency} → ${toCurrency}: ${exchangeRate}`);
     } else {
       console.log('Курс не найден');
@@ -110,8 +113,8 @@ refs.form.addEventListener('submit', e => {
     refs.title.textContent = `${user.username}, ${user.titleCourse}`;
     refs.result.textContent = `Стоимость сессии ${
       user.price
-    } Бат, что на сегодня ${formattedDate} по текущему курсу vipChanger 1 Бат = ${exchangeRate} руб. составляет: ${Math.floor(
-      user.price * exchangeRate
+    } Бат, что на сегодня ${formattedDate} по текущему курсу обменника vipChanger 1 руб = ${exchangeRate} Бат составляет: ${Math.floor(
+      user.price / exchangeRate
     )} руб.`;
     refs.text3.textContent = `Куратор: ${user.teacher}`;
 
@@ -119,7 +122,7 @@ refs.form.addEventListener('submit', e => {
       refs.text2.textContent = `Стоимость ${
         user.opt
       }-x занятий составит - ${Math.floor(
-        user.priceOpt * exchangeRate * user.opt
+        (user.priceOpt / exchangeRate) * user.opt
       )} руб.`;
     } else {
       refs.text2.textContent = ``;
