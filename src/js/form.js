@@ -50,7 +50,7 @@ fetch(`${import.meta.env.BASE_URL}data/exprates.xml`)
     if (exchangeNode) {
       let exchangeRateOut = exchangeNode.querySelector('out').textContent;
       let exchangeRateIn = exchangeNode.querySelector('in').textContent;
-      exchangeRate = (exchangeRateOut / exchangeRateIn).toFixed(4);
+      exchangeRate = (1 / exchangeRateIn).toFixed(4);
 
       console.log(`Курс ${fromCurrency} → ${toCurrency}: ${exchangeRate}`);
     } else {
